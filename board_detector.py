@@ -1,12 +1,15 @@
 import cv2
+from typing import Tuple
 import numpy as np
 
 
 class BoardDetector:
-    def __init__(self, path: str):
+    def __init__(
+        self, path: str, top_left: Tuple[int, int], bottom_right: Tuple[int, int]
+    ):
         self.img = cv2.imread(path)
-        self.top_left = (40, 40)
-        self.bottom_right = (400, 400)
+        self.top_left = top_left
+        self.bottom_right = bottom_right
         cv2.rectangle(self.img, self.top_left, self.bottom_right, (0, 255, 0), 1)
         self.square_width = int((self.bottom_right[0] - self.top_left[0]) / 8)
         self.square_height = int((self.bottom_right[1] - self.top_left[1]) / 8)
@@ -21,8 +24,7 @@ class BoardDetector:
 
         rec_tl = (x_start, y_start)
         rec_br = (x_end, y_end)
-        square = self.img[x_start:x_end, y_start:y_end]
-
+        square = self.img[y_start:y_end, x_start:x_end]
         return square, rec_tl, rec_br
 
     def draw_squares(self):
@@ -30,13 +32,14 @@ class BoardDetector:
             for j in range(8):
                 _, rec_tl, rec_br = self.get_square(i, j)
                 cv2.rectangle(self.img, rec_tl, rec_br, (0, 0, 255), 1)
+        plt.imshow(cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB))
 
     def detect(self):
         matrix = np.zeros((8, 8))
 
         for i in range(8):
             for j in range(8):
-                matrix[i][j] = self.get_piece(i, j)
+                matrix[j][i] = self.get_piece(i, j)
         print(matrix)
 
     def get_piece(self, x: int, y: int):
@@ -59,13 +62,13 @@ class BoardDetector:
             return 0
 
         if square_white:
-            _, tb = cv2.threshold(gray_roi, 127, 255, cv2.THRESH_BINARY)
+            _, tb = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY)
         else:
-            _, tb = cv2.threshold(gray_roi, 127, 255, cv2.THRESH_BINARY_INV)
+            _, tb = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY_INV)
 
         average_intensity = cv2.mean(tb)[0]
         same_color = False
-        if average_intensity > 200:  # Adjust threshold based on your images
+        if average_intensity > 200:
             same_color = True
 
         return self.get_piece_color(square_white, same_color)
@@ -81,5 +84,5 @@ class BoardDetector:
             return 1
 
 
-bd = BoardDetector("./assets/chess.jpg")
+bd = BoardDetector("./assets/chess.jpg", (40, 40), (400, 400))
 bd.detect()
