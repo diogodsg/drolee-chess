@@ -1,13 +1,13 @@
 import cv2
 from typing import Tuple
 import numpy as np
+import matplotlib.pyplot as plt
 
-
-class BoardDetector:
+class CameraModule:
     def __init__(
-        self, path: str, top_left: Tuple[int, int], bottom_right: Tuple[int, int]
+        self,img, top_left: Tuple[int, int], bottom_right: Tuple[int, int]
     ):
-        self.img = cv2.imread(path)
+        self.img = img
         self.top_left = top_left
         self.bottom_right = bottom_right
         cv2.rectangle(self.img, self.top_left, self.bottom_right, (0, 255, 0), 1)
@@ -15,6 +15,7 @@ class BoardDetector:
         self.square_height = int((self.bottom_right[1] - self.top_left[1]) / 8)
         self.threshold_x = int(self.square_width / 8)
         self.threshold_y = int(self.square_height / 8)
+        self.invalid = False
 
     def get_square(self, x, y):
         x_start = self.top_left[0] + x * self.square_width + self.threshold_x
@@ -32,15 +33,17 @@ class BoardDetector:
             for j in range(8):
                 _, rec_tl, rec_br = self.get_square(i, j)
                 cv2.rectangle(self.img, rec_tl, rec_br, (0, 0, 255), 1)
-        plt.imshow(cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB))
+        return self.img
 
     def detect(self):
+        self.invalid=False
+        self.draw_squares()
         matrix = np.zeros((8, 8))
 
         for i in range(8):
             for j in range(8):
                 matrix[j][i] = self.get_piece(i, j)
-        print(matrix)
+        return matrix
 
     def get_piece(self, x: int, y: int):
         roi, _, _ = self.get_square(x, y)
@@ -55,22 +58,30 @@ class BoardDetector:
         average_intensity = cv2.mean(atg)[0]
 
         has_piece = False
-        if average_intensity < 200:
+        if average_intensity < 220:
             has_piece = True
-
-        if not has_piece:
-            return 0
 
         if square_white:
             _, tb = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY)
         else:
-            _, tb = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY_INV)
+            _, tb = cv2.threshold(gray_roi, 150, 255, cv2.THRESH_BINARY_INV)
+
+
+        # fig, (ax1, ax2) = plt.subplots(1, 2)
+        # ax1.imshow(cv2.cvtColor(roi, cv2.COLOR_BGR2RGB))
+        # ax2.imshow(cv2.cvtColor(tb, cv2.COLOR_BGR2RGB))
 
         average_intensity = cv2.mean(tb)[0]
         same_color = False
-        if average_intensity > 200:
+        color_thresh = 150 if square_white else 210
+        
+        if average_intensity > color_thresh:
             same_color = True
-
+        if average_intensity < 40:
+            self.invalid = True
+        if not has_piece:
+            return 0
+ 
         return self.get_piece_color(square_white, same_color)
 
     def get_piece_color(self, square_white: bool, same_color: bool):
@@ -82,7 +93,8 @@ class BoardDetector:
             if same_color:
                 return -1
             return 1
+        
+    def write(self, text):
+        cv2.putText(self.img, text, (10,25), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (0,0,255), 2, cv2.LINE_AA)
 
-
-bd = BoardDetector("./assets/chess.jpg", (40, 40), (400, 400))
-bd.detect()
