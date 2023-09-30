@@ -1,7 +1,7 @@
 import cv2
 from typing import Tuple
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 class CameraModule:
     def __init__(
