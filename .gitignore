@@ -1,2 +1,5 @@
 .venv
 stockfish
+__pycache__/
+assets
+**/__pycache__/

@@ -10,27 +10,25 @@ class GameLogicModule:
     def make_move(self, move: str):
         legal_moves = [str(x) for x in list(self.board.legal_moves)]
         if (move in legal_moves):
-            print("legal move")
             self.board.push_san(move)
-            # print(self.board)
-            self.stockfish.set_fen_position(self.board.fen())
-            bot_move = self.stockfish.get_best_move()
-            print("bot move: ",bot_move)
-            self.board.push_san(bot_move)
-
-            # print(self.board)
-            return bot_move
+            return True
         else:
-            print(f"illegal move {move}")
             return False
         
-    def make_matrix(self): #type(board) == chess.Board()
+    def get_bot_move(self):
+        self.stockfish.set_fen_position(self.board.fen())
+        bot_move = self.stockfish.get_best_move()
+        print("bot move: ",bot_move)
+        self.board.push_san(bot_move)
+        return bot_move
+        
+    def make_matrix(self): 
         pgn = self.board.epd()
-        foo = []  #Final board
+        foo = [] 
         pieces = pgn.split(" ", 1)[0]
         rows = pieces.split("/")
         for row in rows:
-            foo2 = []  #This is the row I make
+            foo2 = []  
             for thing in row:
                 if thing.isdigit():
                     for i in range(0, int(thing)):

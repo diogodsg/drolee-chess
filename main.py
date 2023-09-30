@@ -8,13 +8,14 @@ from modules.camera import CameraModule
 from utils.move_detector import detect_movement
 from modules.game_logic import GameLogicModule
 
-class MainGame:
+class GameRunner:
     def __init__(self):
         self.chess_game = GameLogicModule()
         self.monitor = {"top": 230, "left": 10, "width": 480, "height": 480}
         self.last_state = None
         self.illegal_state = False
         self.bot_move = ""
+        self.player_turn = True
 
     def run(self):
         with mss.mss() as sct:
@@ -37,35 +38,43 @@ class MainGame:
         if bd.invalid:
             self.illegal_state = True
 
-        move = None
-
         if self.illegal_state or self.bot_move:
-            new_state = self.chess_game.make_matrix()
-            img = numpy.array(sct.grab(self.monitor))
-            bd = CameraModule(img, (25,40), (445,460))   
-            bd.write(f"BOT_MOVE {self.bot_move}" if self.bot_move else "INVALID")
-            cv2.imshow("OpenCV/Numpy normal", img)
-
-            if np.array_equal(bd.detect(), np.array(new_state, dtype=float)):
-                self.illegal_state = False
-                self.bot_move = False
-                
-            self.last_state = new_state            
+            self.handle_illegal_state(sct)            
         else:
-            cv2.imshow("OpenCV/Numpy normal", img)
-
-            move = detect_movement(self.last_state, state)
-            if move:
-                print(f"your move: {move}")
-                self.bot_move = self.chess_game.make_move(move)
-
-                if not self.bot_move:
-                    self.illegal_state = True
+            self.handle_legal_state(img, state)
                 
 
         time.sleep(0.1)
 
+    def handle_illegal_state(self, sct):
+        new_state = self.chess_game.make_matrix()
+        img = numpy.array(sct.grab(self.monitor))
+        bd = CameraModule(img, (25,40), (445,460))   
+        bd.write(f"BOT_MOVE {self.bot_move}" if self.bot_move else "INVALID")
+        cv2.imshow("OpenCV/Numpy normal", img)
+        if np.array_equal(bd.detect(), np.array(new_state, dtype=float)):
+            self.illegal_state = False
+            self.bot_move = False
+            
+        self.last_state = new_state        
+
+    def handle_legal_state(self, img, state):
+        cv2.imshow("OpenCV/Numpy normal", img)
+
+        if not self.player_turn:
+            self.bot_move = self.chess_game.get_bot_move()
+            self.player_turn = True
+            
+        else: 
+            move = detect_movement(self.last_state, state)
+            print(move)
+            if move:
+                valid_move = self.chess_game.make_move(move)
+                self.illegal_state = True
+                if valid_move:
+                    self.player_turn = False
+                print(self.player_turn)
        
 
 if __name__ == "__main__":
-    MainGame().run()
+    GameRunner().run()
