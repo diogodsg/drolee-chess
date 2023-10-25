@@ -2,9 +2,20 @@ import cv2
 from typing import Tuple
 import numpy as np
 import matplotlib.pyplot as plt
+from picamera2 import Picamera2, Preview
+from picamera2.array import PiRGBArray
+import time
+
 
 class BoardPart:
-    def __init__(self, img, top_left: Tuple[int, int], bottom_right: Tuple[int, int], x: int, y: int):
+    def __init__(
+        self,
+        img,
+        top_left: Tuple[int, int],
+        bottom_right: Tuple[int, int],
+        x: int,
+        y: int,
+    ):
         self.x = x
         self.y = y
         self.img = img
@@ -34,24 +45,37 @@ class BoardPart:
                 cv2.rectangle(self.img, rec_tl, rec_br, (0, 0, 255), 3)
         return self.img
 
+
 class CameraModule:
-    def __init__(
-        self,img, top_left: Tuple[int, int], bottom_right: Tuple[int, int]
-    ):
-        self.img = img
+    def __init__(self):
+        self.picam = Picamera2()
+        self.config = self.picam.create_preview_configuration()
+        self.picam.configure(self.config)
+        self.picam.start()
+        self.picam.resolution = (1920, 1080)
+        self.picam.framerate = 30
+        time.sleep(1)
+
+    def get_pic(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
+        self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
+        # display_window = cv2.namedWindow("Image")
+
         total_width = bottom_right[0] - top_left[0]
 
         # Left Cemitery
-        bottom_right_lc =(int(top_left[0] + 0.155*total_width), int(bottom_right[1]))
+        bottom_right_lc = (int(top_left[0] + 0.155 * total_width), int(bottom_right[1]))
         self.white_cemitery = BoardPart(self.img, top_left, bottom_right_lc, 2, 8)
 
         # Main board
-        top_left_mb = (int(top_left[0] + 0.1825*total_width), int(top_left[1]))
-        bottom_right_mb = (int(top_left[0] + 0.8175*total_width), int(bottom_right[1]))
+        top_left_mb = (int(top_left[0] + 0.1825 * total_width), int(top_left[1]))
+        bottom_right_mb = (
+            int(top_left[0] + 0.8175 * total_width),
+            int(bottom_right[1]),
+        )
         self.main_board = BoardPart(self.img, top_left_mb, bottom_right_mb, 8, 8)
 
         # Right Cemitery
-        top_left_rc =(int(top_left[0] + 0.845*total_width), int(top_left[1]))
+        top_left_rc = (int(top_left[0] + 0.845 * total_width), int(top_left[1]))
         self.black_cemitery = BoardPart(self.img, top_left_rc, bottom_right, 2, 8)
 
         self.invalid = False
@@ -62,7 +86,8 @@ class CameraModule:
         plt.imshow(self.black_cemitery.draw_squares())
 
     def detect_game(self):
-        self.invalid=False
+        self.get_pic()
+        self.invalid = False
         self.draw_squares()
         main_board = np.zeros((8, 8))
         left_cemitery = np.zeros((8, 2))
@@ -79,15 +104,19 @@ class CameraModule:
             for j in range(8):
                 right_cemitery[j][i] = self.get_cemitery_piece(i, j, "black")
 
-        return left_cemitery, main_board, right_cemitery
+        return {
+            "left_cemitery": left_cemitery,
+            "main_board": main_board,
+            "right_cemitery": right_cemitery,
+            "invalid": self.invalid,
+        }
 
-
-    def get_cemitery_piece(self,x: int, y: int, side: str = "white"):
+    def get_cemitery_piece(self, x: int, y: int, side: str = "white"):
         # Gets only the circular region on the center of the cemitery square
         if side == "white":
-          roi, _, _ = self.white_cemitery.get_square(x, y)
+            roi, _, _ = self.white_cemitery.get_square(x, y)
         else:
-          roi, _, _ = self.black_cemitery.get_square(x, y)
+            roi, _, _ = self.black_cemitery.get_square(x, y)
 
         height, width = roi.shape[:2]
 
@@ -105,7 +134,6 @@ class CameraModule:
             return self.detect_white_cemitery(result)
 
         return self.detect_black_cemitery(roi, result)
-
 
     def detect_white_cemitery(self, result):
         # Uses the fact that the pieces are a bit yellow to detect
@@ -132,7 +160,6 @@ class CameraModule:
         average_intensity = cv2.mean(atg)[0]
         return -1 if average_intensity < 220 else 0
 
-
     def get_piece(self, x: int, y: int):
         roi, _, _ = self.main_board.get_square(x, y)
 
@@ -149,27 +176,26 @@ class CameraModule:
         average_intensity = cv2.mean(atg)[0]
         has_piece = False
 
-
         if average_intensity < 215:
             has_piece = True
-        if (has_piece):
-          return self.get_piece_color(square_white, False)
+        if has_piece:
+            return self.get_piece_color(square_white, False)
 
         # Check for same square piece color
         if square_white:
-              tb = cv2.adaptiveThreshold(
+            tb = cv2.adaptiveThreshold(
                 blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
-              )
+            )
         else:
             _, tb = cv2.threshold(gray_roi, 50, 255, cv2.THRESH_BINARY)
 
         average_intensity = cv2.mean(tb)[0]
         thresh = 235 if square_white else 220
 
-        if (average_intensity < thresh):
-          return self.get_piece_color(square_white, True)
+        if average_intensity < thresh:
+            return self.get_piece_color(square_white, True)
         else:
-          return 0
+            return 0
 
     def get_piece_color(self, square_white: bool, same_color: bool):
         if square_white:
@@ -182,5 +208,13 @@ class CameraModule:
             return 1
 
     def write(self, text):
-        cv2.putText(self.img, text, (10,25), cv2.FONT_HERSHEY_SIMPLEX,
-                   1, (0,0,255), 2, cv2.LINE_AA);
+        cv2.putText(
+            self.img,
+            text,
+            (10, 25),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 0, 255),
+            2,
+            cv2.LINE_AA,
+        )
