@@ -3,6 +3,8 @@ import numpy as np
 from modules.camera import CameraModule
 from utils.move_detector import detect_movement
 from modules.game_logic import GameLogicModule
+from modules.display import DisplayModule
+from modules.buttons import ButtonsModule
 
 
 class GameRunner:
@@ -58,6 +60,94 @@ class GameRunner:
                 if valid_move:
                     self.player_turn = False
                 print(self.player_turn)
+
+
+class Menu:
+    def __init__(self):
+        self.buttons = ButtonsModule()
+
+        self.color = self.selectColor()
+        self.diff = self.selectDifficulty()
+        self.game_time = self.selectTime()
+
+    def selectColor(self):
+        DisplayModule.display(0, "Selecione a cor")
+        DisplayModule.display(1, "Q-Brancas R-Pretas")
+
+        if self.buttons.buttonPressed("queen"):
+            DisplayModule.display(0, "Cor Branca")
+            DisplayModule.display(1, "Selecionada")
+            time.sleep(2)
+            return 0
+        elif self.buttons.buttonPressed("rook"):
+            DisplayModule.display(0, "Cor Preta")
+            DisplayModule.display(1, "Selecionada")
+            time.sleep(2)
+            return 1
+
+    def selectDifficulty(self):
+        DisplayModule.display(0, "Selecione a dificuldade")
+        DisplayModule.display(1, "Q-1 B-2 N-3 R-4")
+        if self.buttons.buttonPressed("queen"):
+            DisplayModule.display(0, "Dificuldade 1")
+            DisplayModule.display(1, "Selecionada")
+            time.sleep(2)
+            return 0
+        elif self.buttons.buttonPressed("bishop"):
+            DisplayModule.display(0, "Dificuldade 2")
+            DisplayModule.display(1, "Selecionada")
+            time.sleep(2)
+            return 1
+        elif self.buttons.buttonPressed("knight"):
+            DisplayModule.display(0, "Dificuldade 3")
+            DisplayModule.display(1, "Selecionada")
+            time.sleep(2)
+            return 2
+        elif self.buttons.buttonPressed("rook"):
+            DisplayModule.display(0, "Dificuldade 4")
+            DisplayModule.display(1, "Selecionada")
+            time.sleep(2)
+            return 3
+
+    def selectTime(self):
+        DisplayModule.display(0, "Selecione a o tempo")
+        DisplayModule.display(1, "Q-Sem tempo R-10 min")
+
+        if self.buttons.buttonPressed("queen"):
+            DisplayModule.display(0, "Sem tempo")
+            DisplayModule.display(1, "Selecionado")
+            time.sleep(2)
+            return 0
+        elif self.buttons.buttonPressed("rook"):
+            DisplayModule.display(0, "10 min")
+            DisplayModule.display(1, "Selecionado")
+            time.sleep(2)
+            return 1
+    
+    def select_promotion(self):
+        DisplayModule.display(0, "Selecione a promocao")
+        DisplayModule.display(1, "desejada")
+        if self.buttons.buttonPressed("queen"):
+            DisplayModule.display(0, "Peao promovido")
+            DisplayModule.display(1, "para rainha")
+            time.sleep(2)
+            return 0
+        elif self.buttons.buttonPressed("bishop"):
+            DisplayModule.display(0, "Peao promovido")
+            DisplayModule.display(1, "para bispo")
+            time.sleep(2)
+            return 1
+        elif self.buttons.buttonPressed("knight"):
+            DisplayModule.display(0, "Peao promovido")
+            DisplayModule.display(1, "para cavalo")
+            time.sleep(2)
+            return 2
+        elif self.buttons.buttonPressed("rook"):
+            DisplayModule.display(0, "Peao promovido")
+            DisplayModule.display(1, "para torre")
+            time.sleep(2)
+            return 3
+
 
 
 if __name__ == "__main__":
