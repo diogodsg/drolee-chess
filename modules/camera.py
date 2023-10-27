@@ -108,7 +108,7 @@ class CameraModule:
             "left_cemitery": left_cemitery,
             "main_board": main_board,
             "right_cemitery": right_cemitery,
-            "invalid": self.invalid,
+            "instructedvalid": self.invalid,
         }
 
     def get_cemitery_piece(self, x: int, y: int, side: str = "white"):

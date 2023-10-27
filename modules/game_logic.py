@@ -3,10 +3,11 @@ from stockfish import Stockfish
 
 
 class GameLogicModule:
-    def __init__(self):
+    def __init__(self,  difficulty):
         self.board = chess.Board()
         self.stockfish = Stockfish(path="./stockfish/stockfish-ubuntu-x86-64-modern")
         self.stockfish.set_fen_position(self.board.fen())
+        self.stockfish.set_skill_level(difficulty)
 
     def make_move(self, move: str):
         legal_moves = [str(x) for x in list(self.board.legal_moves)]
