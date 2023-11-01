@@ -1,5 +1,3 @@
-
-
 from modules.game_runner import GameRunner
 from modules.menu import Menu
 
@@ -21,6 +19,5 @@ class Application:
 
             self.menu.endGame()
 
-            #joga tudo para cemiterio
+            # joga tudo para cemiterio
             game.finish()
-      

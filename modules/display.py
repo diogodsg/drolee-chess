@@ -6,14 +6,14 @@ import time
 class DisplayModule:
     def __init__(self):
         # GPIO to LCD mapping
-        self.LCD_RS = 7  # Pi pin 26
-        self.LCD_E = 8  # Pi pin 24
-        self.LCD_D4 = 25  # Pi pin 22
-        self.LCD_D5 = 24  # Pi pin 18
-        self.LCD_D6 = 23  # Pi pin 16
-        self.LCD_D7 = 18  # Pi pin 12
+        self.LCD_RS = 7
+        self.LCD_E = 8
+        self.LCD_D4 = 25
+        self.LCD_D5 = 24
+        self.LCD_D6 = 23
+        self.LCD_D7 = 18
 
-        # Device constants
+        # Constants
         self.LCD_CHR = True  # Character mode
         self.LCD_CMD = False  # Command mode
         self.LCD_CHARS = 16  # Characters per line (16 max)
@@ -45,8 +45,6 @@ class DisplayModule:
         self.bottom_pos_max = 0
 
         self.running = False
-
-        # Initialize and clear display
 
     def lcd_init(self):
         self.lcd_write(0x33, self.LCD_CMD)  # Initialize
