@@ -1,7 +1,7 @@
 import cv2
 from typing import Tuple
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from picamera2 import Picamera2, Preview
 from picamera2.array import PiRGBArray
 import time
@@ -85,9 +85,9 @@ class CameraModule:
         self.invalid = False
 
     def draw_squares(self):
-        plt.imshow(self.main_board.draw_squares())
-        plt.imshow(self.white_cemitery.draw_squares())
-        plt.imshow(self.black_cemitery.draw_squares())
+        self.main_board.draw_squares()
+        self.white_cemitery.draw_squares()
+        self.black_cemitery.draw_squares()
 
     def detect_game(self):
         self.get_pic()
