@@ -101,8 +101,9 @@ class DisplayModule:
 
     def lcd_text(self, message, line):
         # Send text to display
+        print(f"writing {message} on display")
         message = message.ljust(self.LCD_CHARS, " ")
-
+        
         self.lcd_write(line, self.LCD_CMD)
 
         for i in range(self.LCD_CHARS):
