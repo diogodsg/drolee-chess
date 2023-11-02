@@ -54,10 +54,14 @@ class CameraModule:
         self.picam.start()
         self.picam.resolution = (1920, 1080)
         self.picam.framerate = 30
+        self.stream = io.BytesIO()
         time.sleep(1)
 
     def get_pic(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
-        self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
+        # self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
+        self.picam.capture(self.stream, format="jpeg")
+        data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
+        self.img = cv2.imdecode(data, 1)
         # display_window = cv2.namedWindow("Image")
 
         total_width = bottom_right[0] - top_left[0]
