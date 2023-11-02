@@ -45,7 +45,7 @@ class BoardPart:
         for i in range(self.x):
             for j in range(self.y):
                 _, rec_tl, rec_br = self.get_square(i, j)
-                cv2.rectangle(self.img, rec_tl, rec_br, (0, 0, 255), 3)
+                cv2.rectangle(self.img, rec_tl, rec_br, (0, 0, 255), 1)
         return self.img
 
 
@@ -102,7 +102,7 @@ class CameraModule:
         self.invalid = False
         self.draw_squares()
         cv2.imshow("color image", self.img)
-        cv2.destroyAllwindows()
+        cv2.waitKey(0)
 
         main_board = np.zeros((8, 8))
         left_cemitery = np.zeros((8, 2))
