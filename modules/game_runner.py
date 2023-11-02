@@ -48,6 +48,7 @@ class GameRunner:
             self.last_timestamp = now
 
     def handle_frame(self):
+        print("Inside handle_frane!")
         board = self.camera_module.detect_game()
         print("Game detected")
         if board["obstructed"]:

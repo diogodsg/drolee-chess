@@ -63,7 +63,9 @@ class CameraModule:
         time.sleep(1)
 
     def get_pic(self):
+        print("inside get_pic")
         self.img = self.picam.capture_array()
+        print("after capture_array")
         bottom_right = self.bottom_right
         top_left = self.top_left
         total_width = bottom_right[0] - top_left[0]
@@ -85,6 +87,7 @@ class CameraModule:
         self.black_cemitery = BoardPart(self.img, top_left_rc, bottom_right, 2, 8)
 
         self.invalid = False
+        print("get_pic ended!")
 
     def draw_squares(self):
         self.main_board.draw_squares()
@@ -92,7 +95,9 @@ class CameraModule:
         self.black_cemitery.draw_squares()
 
     def detect_game(self):
+        print("Insiee detect_game!")
         self.get_pic()
+        print("after get_pic")
         self.invalid = False
         self.draw_squares()
         main_board = np.zeros((8, 8))
