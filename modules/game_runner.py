@@ -23,9 +23,11 @@ class GameRunner:
         self.last_timestamp = time.time()
 
     def run(self):
-        while not self.chess_game.board.outcome:
+        print("self.chess_game.board.outcome")
+        print(self.chess_game.board.outcome())
+        while not self.chess_game.board.outcome():
             print("Inside loop")
-            print(self.chess_game.board.outcome)
+            print(self.chess_game.board.outcome())
             if self.has_time:
                 self.display.display(
                     0, "Tempo: " + time.strftime("%M:%S", time.gmtime(self.player_time))
