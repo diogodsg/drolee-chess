@@ -101,6 +101,9 @@ class CameraModule:
         print("after get_pic")
         self.invalid = False
         self.draw_squares()
+        cv2.imshow("color image", self.img)
+        cv2.destroyAllwindows()
+
         main_board = np.zeros((8, 8))
         left_cemitery = np.zeros((8, 2))
         right_cemitery = np.zeros((8, 2))
