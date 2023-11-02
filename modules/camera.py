@@ -108,7 +108,7 @@ class CameraModule:
             "left_cemitery": left_cemitery,
             "main_board": main_board,
             "right_cemitery": right_cemitery,
-            "instructedvalid": self.invalid,
+            "obstructed": self.invalid,
         }
 
     def get_cemitery_piece(self, x: int, y: int, side: str = "white"):
@@ -167,13 +167,14 @@ class CameraModule:
 
         gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray_roi, (5, 5), 0)
-
+        is_invalid = self.verify_obstruction(roi, gray_roi, square_white)
         # Check for differente square piece color
         if square_white:
             _, atg = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY)
         else:
             _, atg = cv2.threshold(gray_roi, 150, 255, cv2.THRESH_BINARY_INV)
         average_intensity = cv2.mean(atg)[0]
+
         has_piece = False
 
         if average_intensity < 215:
@@ -187,7 +188,9 @@ class CameraModule:
                 blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
             )
         else:
-            _, tb = cv2.threshold(gray_roi, 50, 255, cv2.THRESH_BINARY)
+            _, tb = cv2.threshold(gray_roi, 60, 255, cv2.THRESH_BINARY)
+
+
 
         average_intensity = cv2.mean(tb)[0]
         thresh = 235 if square_white else 220
@@ -196,7 +199,7 @@ class CameraModule:
             return self.get_piece_color(square_white, True)
         else:
             return 0
-
+        
     def get_piece_color(self, square_white: bool, same_color: bool):
         if square_white:
             if same_color:
@@ -206,6 +209,12 @@ class CameraModule:
             if same_color:
                 return -1
             return 1
+        
+    def verify_obstruction(self, roi, gray_roi, is_white):
+      _, atg = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY)
+      average_intensity = cv2.mean(atg)[0]
+      if (is_white and average_intensity < 50) or (not is_white and average_intensity > 205):
+        self.invalid = True
 
     def write(self, text):
         cv2.putText(
