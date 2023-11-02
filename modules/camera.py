@@ -4,7 +4,7 @@ from typing import Tuple
 import numpy as np
 
 # import matplotlib.pyplot as plt
-from picamera2 import Picamera2, Preview
+from picamera2 import Picamera2
 
 # from picamera2.array import PiRGBArray
 import time
@@ -64,7 +64,11 @@ class CameraModule:
 
     def get_pic(self):
         # self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
-        self.picam.capture(self.stream, format="jpeg")
+        print("self.stream1")
+        print(self.stream)
+        self.picam.capture_buffer(self.stream, format="jpeg")
+        print("self.stream2")
+        print(self.stream)
         data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
         self.img = cv2.imdecode(data, 1)
         # display_window = cv2.namedWindow("Image")
