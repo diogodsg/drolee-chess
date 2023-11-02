@@ -3,9 +3,9 @@ from stockfish import Stockfish
 
 
 class GameLogicModule:
-    def __init__(self,  difficulty):
+    def __init__(self, difficulty):
         self.board = chess.Board()
-        self.stockfish = Stockfish(path="./stockfish/stockfish-ubuntu-x86-64-modern")
+        self.stockfish = Stockfish(path="./Stockfish-sf_15/src/stockfish")
         self.stockfish.set_fen_position(self.board.fen())
         self.stockfish.set_skill_level(difficulty)
 
