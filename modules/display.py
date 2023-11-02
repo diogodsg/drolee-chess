@@ -57,6 +57,7 @@ class DisplayModule:
 
     def lcd_write(self, bits, mode):
         # High bits
+        GPIO.setmode(GPIO.BCM)
         GPIO.output(self.LCD_RS, mode)  # RS
 
         GPIO.output(self.LCD_D4, False)
