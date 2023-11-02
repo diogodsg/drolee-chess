@@ -21,7 +21,6 @@ class DisplayModule:
         self.LCD_LINE_2 = 0xC0  # LCD memory location 2nd line
 
         GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)  # Use BCM GPIO numbers
         GPIO.setup(self.LCD_E, GPIO.OUT)  # Set GPIO's to output mode
         GPIO.setup(self.LCD_RS, GPIO.OUT)
         GPIO.setup(self.LCD_D4, GPIO.OUT)
