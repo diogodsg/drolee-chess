@@ -115,7 +115,14 @@ class CameraModule:
         for i in range(2):
             for j in range(8):
                 right_cemitery[j][i] = self.get_cemitery_piece(i, j, "black")
-
+        print(
+            {
+                "left_cemitery": left_cemitery,
+                "main_board": main_board,
+                "right_cemitery": right_cemitery,
+                "instructedvalid": self.invalid,
+            }
+        )
         return {
             "left_cemitery": left_cemitery,
             "main_board": main_board,
