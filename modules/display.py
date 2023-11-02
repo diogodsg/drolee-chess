@@ -135,11 +135,11 @@ class DisplayModule:
                 self.bottom_text = "   " + text + "   "  # pad the text with spaces
                 self.bottom_pos_max = 16 - len(self.bottom_text)
 
+        self.running = True
         self.update_thread = Thread(target=self.update, args=())
         self.update_thread.start()
 
     def update(self):
-        print(self.ru)
         while self.running:
             if self.top_pos == self.top_pos_max:
                 self.top_pos = 0
@@ -156,7 +156,7 @@ class DisplayModule:
                 self.top_text[self.top_pos : self.top_pos_max + 16], self.LCD_LINE_1
             )
             self.lcd_text(
-                self.bottom_text[self.bottom_pos : self.bottom_pos_max + 16],
+                self.bottom_text[self.bottom_pos : self.bottom_pos + 16],
                 self.LCD_LINE_2,
             )
 
