@@ -23,12 +23,12 @@ class Application:
 
             self.menu.waitStart()
 
-            game = GameRunner(color=color, difficulty=difficulty, has_time=has_time)
-            game.run()
+            # game = GameRunner(color=color, difficulty=difficulty, has_time=has_time)
+            # game.run()
 
-            self.menu.endGame()
+            # self.menu.endGame()
 
-            #joga tudo para cemiterio
-            game.finish()
+            # # joga tudo para cemiterio
+            # game.finish()
 app = Application()
-      
+app.start()
