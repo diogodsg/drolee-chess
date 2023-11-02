@@ -1,9 +1,12 @@
+import io
 import cv2
 from typing import Tuple
 import numpy as np
+
 # import matplotlib.pyplot as plt
-from picamera2 import Picamera2, Preview
-from picamera2.array import PiRGBArray
+from picamera2 import Picamera2
+
+# from picamera2.array import PiRGBArray
 import time
 
 
@@ -47,19 +50,22 @@ class BoardPart:
 
 
 class CameraModule:
-    def __init__(self):
+    def __init__(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
         self.picam = Picamera2()
         self.config = self.picam.create_preview_configuration()
         self.picam.configure(self.config)
         self.picam.start()
         self.picam.resolution = (1920, 1080)
         self.picam.framerate = 30
+        self.stream = None
+        self.top_left = top_left
+        self.bottom_right = bottom_right
         time.sleep(1)
 
-    def get_pic(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
-        self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
-        # display_window = cv2.namedWindow("Image")
-
+    def get_pic(self):
+        self.img = self.picam.capture_array()
+        bottom_right = self.bottom_right
+        top_left = self.top_left
         total_width = bottom_right[0] - top_left[0]
 
         # Left Cemitery
@@ -103,7 +109,14 @@ class CameraModule:
         for i in range(2):
             for j in range(8):
                 right_cemitery[j][i] = self.get_cemitery_piece(i, j, "black")
-
+        print(
+            {
+                "left_cemitery": left_cemitery,
+                "main_board": main_board,
+                "right_cemitery": right_cemitery,
+                "obstructed": self.invalid,
+            }
+        )
         return {
             "left_cemitery": left_cemitery,
             "main_board": main_board,

@@ -21,7 +21,7 @@ class DisplayModule:
         self.LCD_LINE_2 = 0xC0  # LCD memory location 2nd line
 
         GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)  # Use BCM GPIO numbers
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.LCD_E, GPIO.OUT)  # Set GPIO's to output mode
         GPIO.setup(self.LCD_RS, GPIO.OUT)
         GPIO.setup(self.LCD_D4, GPIO.OUT)
@@ -57,6 +57,7 @@ class DisplayModule:
 
     def lcd_write(self, bits, mode):
         # High bits
+        GPIO.setmode(GPIO.BCM)
         GPIO.output(self.LCD_RS, mode)  # RS
 
         GPIO.output(self.LCD_D4, False)
@@ -101,9 +102,9 @@ class DisplayModule:
 
     def lcd_text(self, message, line):
         # Send text to display
-        print(f"writing {message} on display")
+        # print(f"writing {message} on display")
         message = message.ljust(self.LCD_CHARS, " ")
-        
+
         self.lcd_write(line, self.LCD_CMD)
 
         for i in range(self.LCD_CHARS):
@@ -112,7 +113,7 @@ class DisplayModule:
     def display(self, line, text):
         if self.running:
             self.running = False
-            if hasattr(self, 'update_thread') and self.update_thread.is_alive():
+            if hasattr(self, "update_thread") and self.update_thread.is_alive():
                 self.update_thread.join()
 
         self.top_pos = 0

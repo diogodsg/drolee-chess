@@ -5,9 +5,9 @@ from modules.display import DisplayModule
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, display):
+        self.display = display
         self.buttons = ButtonsModule()
-        self.display = DisplayModule()
 
     def endGame(self):
         self.display.display(0, "Jogo Finalizado!")
@@ -49,7 +49,7 @@ class Menu:
 
     def selectDifficulty(self):
         self.display.display(0, "Selecione a dificuldade")
-        self.display.display(1, "Q-1 B-2 N-3 R-4")
+        self.display.display(1, "Q-5 B-10 N-15 R-20")
 
         while True:
             if self.buttons.buttonPressed("queen"):
