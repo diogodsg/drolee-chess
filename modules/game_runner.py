@@ -31,7 +31,7 @@ class GameRunner:
                 self.handle_time()
             self.handle_frame()
 
-        GPIO.cleanup()
+        # GPIO.cleanup()
 
     def handle_time(self):
         if self.player_turn:
