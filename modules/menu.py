@@ -5,9 +5,9 @@ from modules.display import DisplayModule
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, display):
+        self.display = display
         self.buttons = ButtonsModule()
-        self.display = DisplayModule()
 
     def endGame(self):
         self.display.display(0, "Jogo Finalizado!")

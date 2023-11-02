@@ -1,5 +1,4 @@
-
-
+from modules.display import DisplayModule
 from modules.game_runner import GameRunner
 from modules.menu import Menu
 
@@ -7,7 +6,8 @@ from modules.menu import Menu
 class Application:
     def __init__(self):
         print("Starting app")
-        self.menu = Menu()
+        self.display = DisplayModule()
+        self.menu = Menu(self.display)
 
     def start(self):
         while True:
@@ -16,19 +16,25 @@ class Application:
 
             print("On Select Color State")
             difficulty = self.menu.selectDifficulty()
-            
-            
+
             print("On Select Difficulty State")
             has_time = self.menu.selectTime()
 
             self.menu.waitStart()
 
-            game = GameRunner(color=color, difficulty=difficulty, has_time=has_time)
+            game = GameRunner(
+                color=color,
+                difficulty=difficulty,
+                has_time=has_time,
+                display=self.display,
+            )
             game.run()
 
             self.menu.endGame()
 
             # joga tudo para cemiterio
             game.finish()
+
+
 app = Application()
 app.start()
