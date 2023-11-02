@@ -50,7 +50,7 @@ class BoardPart:
 
 
 class CameraModule:
-    def __init__(self):
+    def __init__(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
         self.picam = Picamera2()
         self.config = self.picam.create_preview_configuration()
         self.picam.configure(self.config)
@@ -58,15 +58,18 @@ class CameraModule:
         self.picam.resolution = (1920, 1080)
         self.picam.framerate = 30
         self.stream = io.BytesIO()
+        self.top_left = top_left
+        self.bottom_right = bottom_right
         time.sleep(1)
 
-    def get_pic(self, top_left: Tuple[int, int], bottom_right: Tuple[int, int]):
+    def get_pic(self):
         # self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
         self.picam.capture(self.stream, format="jpeg")
         data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
         self.img = cv2.imdecode(data, 1)
         # display_window = cv2.namedWindow("Image")
-
+        bottom_right = self.bottom_right
+        top_left = self.top_left
         total_width = bottom_right[0] - top_left[0]
 
         # Left Cemitery

@@ -49,7 +49,7 @@ class Menu:
 
     def selectDifficulty(self):
         self.display.display(0, "Selecione a dificuldade")
-        self.display.display(1, "Q-1 B-2 N-3 R-4")
+        self.display.display(1, "Q-5 B-10 N-15 R-20")
 
         while True:
             if self.buttons.buttonPressed("queen"):

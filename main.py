@@ -11,15 +11,15 @@ class Application:
 
     def start(self):
         while True:
-            print("On Select Color State")
-            color = self.menu.selectColor()
-
-            print("On Select Color State")
-            difficulty = self.menu.selectDifficulty()
-
-            print("On Select Difficulty State")
-            has_time = self.menu.selectTime()
-
+            # print("On Select Color State")
+            # color = self.menu.selectColor()
+            color = 0
+            # print("On Select Color State")
+            # difficulty = self.menu.selectDifficulty()
+            difficulty = 5
+            # print("On Select Difficulty State")
+            # has_time = self.menu.selectTime()
+            has_time = 0
             self.menu.waitStart()
 
             game = GameRunner(

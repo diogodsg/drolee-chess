@@ -101,9 +101,9 @@ class DisplayModule:
 
     def lcd_text(self, message, line):
         # Send text to display
-        print(f"writing {message} on display")
+        # print(f"writing {message} on display")
         message = message.ljust(self.LCD_CHARS, " ")
-        
+
         self.lcd_write(line, self.LCD_CMD)
 
         for i in range(self.LCD_CHARS):
@@ -112,7 +112,7 @@ class DisplayModule:
     def display(self, line, text):
         if self.running:
             self.running = False
-            if hasattr(self, 'update_thread') and self.update_thread.is_alive():
+            if hasattr(self, "update_thread") and self.update_thread.is_alive():
                 self.update_thread.join()
 
         self.top_pos = 0
