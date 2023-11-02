@@ -4,7 +4,7 @@ from typing import Tuple
 import numpy as np
 
 # import matplotlib.pyplot as plt
-from picamera2 import Picamera2
+from picamera2 import Picamera2, Preview
 
 # from picamera2.array import PiRGBArray
 import time
@@ -56,6 +56,7 @@ class CameraModule:
         self.picam.configure(self.config)
         self.picam.start()
         self.picam.resolution = (1920, 1080)
+        self.picam.start_preview(Preview.QTGL)
         self.picam.framerate = 30
         self.stream = None
         self.top_left = top_left
