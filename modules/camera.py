@@ -69,7 +69,8 @@ class CameraModule:
         self.stream = self.picam.capture_buffer()
         print("self.stream2")
         print(self.stream)
-        data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
+        # data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
+        data = self.stream
         self.img = cv2.imdecode(data, 1)
         # display_window = cv2.namedWindow("Image")
         bottom_right = self.bottom_right
