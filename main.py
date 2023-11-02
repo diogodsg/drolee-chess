@@ -1,17 +1,24 @@
 
 
-from modules.game_runner import GameRunner
+# from modules.game_runner import GameRunner
 from modules.menu import Menu
 
 
 class Application:
     def __init__(self):
+        print("Starting app")
         self.menu = Menu()
 
     def start(self):
         while True:
+            print("On Select Color State")
             color = self.menu.selectColor()
+
+            print("On Select Color State")
             difficulty = self.menu.selectDifficulty()
+            
+            
+            print("On Select Difficulty State")
             has_time = self.menu.selectTime()
 
             self.menu.waitStart()
@@ -23,4 +30,5 @@ class Application:
 
             #joga tudo para cemiterio
             game.finish()
+app = Application()
       
