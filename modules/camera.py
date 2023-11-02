@@ -1,9 +1,12 @@
+import io
 import cv2
 from typing import Tuple
 import numpy as np
+
 # import matplotlib.pyplot as plt
 from picamera2 import Picamera2, Preview
-from picamera2.array import PiRGBArray
+
+# from picamera2.array import PiRGBArray
 import time
 
 
