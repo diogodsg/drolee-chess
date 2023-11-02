@@ -16,9 +16,9 @@ class GameRunner:
         self.player_turn = True if color == "WHITE" else False
         self.camera_module = CameraModule((0, 0), (200, 200))
         board = self.camera_module.detect_game()
-        self.left_cem_state = board["left_cemetery"]
+        self.left_cem_state = board["left_cemitery"]
         self.last_state = board["main_board"]
-        self.right_cem_state = board["right_cemetery"]
+        self.right_cem_state = board["right_cemitery"]
         self.player_time = 10 * 60  # 10 min in seconds
 
         self.last_timestamp = time.time()
