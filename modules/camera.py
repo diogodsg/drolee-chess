@@ -64,12 +64,10 @@ class CameraModule:
 
     def get_pic(self):
         # self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
-        print("self.stream1")
-        print(self.stream)
         self.stream = self.picam.capture_buffer()
-        print("self.stream2")
-        print(self.stream)
         # data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
+        print("type(self.stream)")
+        print(type(self.stream))
         data = self.stream
         self.img = cv2.imdecode(data, 1)
         # display_window = cv2.namedWindow("Image")
