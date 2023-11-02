@@ -98,17 +98,20 @@ class CameraModule:
         main_board = np.zeros((8, 8))
         left_cemitery = np.zeros((8, 2))
         right_cemitery = np.zeros((8, 2))
-
+        print("\tInitialized")
         for i in range(8):
             for j in range(8):
                 main_board[j][i] = self.get_piece(i, j)
-
+        print("\tGot pieces main board")
         for i in range(2):
             for j in range(8):
                 left_cemitery[j][i] = self.get_cemitery_piece(i, j, "white")
+        print("\tGot pieces left cemeterey")
+
         for i in range(2):
             for j in range(8):
                 right_cemitery[j][i] = self.get_cemitery_piece(i, j, "black")
+        print("\tGot pieces right cemeeteryye-fe8yhv")
         print(
             {
                 "left_cemitery": left_cemitery,
@@ -203,8 +206,6 @@ class CameraModule:
         else:
             _, tb = cv2.threshold(gray_roi, 60, 255, cv2.THRESH_BINARY)
 
-
-
         average_intensity = cv2.mean(tb)[0]
         thresh = 235 if square_white else 220
 
@@ -212,7 +213,7 @@ class CameraModule:
             return self.get_piece_color(square_white, True)
         else:
             return 0
-        
+
     def get_piece_color(self, square_white: bool, same_color: bool):
         if square_white:
             if same_color:
@@ -222,12 +223,14 @@ class CameraModule:
             if same_color:
                 return -1
             return 1
-        
+
     def verify_obstruction(self, roi, gray_roi, is_white):
-      _, atg = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY)
-      average_intensity = cv2.mean(atg)[0]
-      if (is_white and average_intensity < 50) or (not is_white and average_intensity > 205):
-        self.invalid = True
+        _, atg = cv2.threshold(gray_roi, 100, 255, cv2.THRESH_BINARY)
+        average_intensity = cv2.mean(atg)[0]
+        if (is_white and average_intensity < 50) or (
+            not is_white and average_intensity > 205
+        ):
+            self.invalid = True
 
     def write(self, text):
         cv2.putText(

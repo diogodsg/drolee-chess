@@ -111,11 +111,13 @@ class DisplayModule:
             self.lcd_write(ord(message[i]), self.LCD_CHR)
 
     def display(self, line, text):
+        print("\tEntered")
         if self.running:
             self.running = False
+            print("\tWaiting Thread stop")
             if hasattr(self, "update_thread") and self.update_thread.is_alive():
                 self.update_thread.join()
-
+        print("\tThread stopped")
         self.top_pos = 0
         self.bottom_pos = 0
 
@@ -135,10 +137,11 @@ class DisplayModule:
             else:
                 self.bottom_text = "   " + text + "   "  # pad the text with spaces
                 self.bottom_pos_max = len(self.bottom_text) - 16
-
+        print("\tStarting thread")
         self.running = True
         self.update_thread = Thread(target=self.update, args=())
         self.update_thread.start()
+        print("\tdisplay done")
 
     def update(self):
         while self.running:

@@ -49,15 +49,15 @@ class GameRunner:
 
     def handle_frame(self):
         board = self.camera_module.detect_game()
-
+        print("Game detected")
         if board["obstructed"]:
             self.display.display(1, "Obstruido!")
-
         elif self.illegal_state or self.bot_move:
             self.display.display(1, "Estado ilegal!")
             self.handle_illegal_state(board)
         else:
             self.handle_legal_state(board["main_board"])
+        print("Frame handled")
 
         time.sleep(0.1)
 
