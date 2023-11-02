@@ -112,7 +112,8 @@ class DisplayModule:
     def display(self, line, text):
         if self.running:
             self.running = False
-            self.update_thread.join()
+            if hasattr(self, 'update_thread') and self.update_thread.is_alive():
+                self.update_thread.join()
 
         self.top_pos = 0
         self.bottom_pos = 0
@@ -138,6 +139,7 @@ class DisplayModule:
         self.update_thread.start()
 
     def update(self):
+        print(self.ru)
         while self.running:
             if self.top_pos == self.top_pos_max:
                 self.top_pos = 0
