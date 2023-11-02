@@ -20,7 +20,6 @@ class GameRunner:
         self.last_state = board["main_board"]
         self.right_cem_state = board["right_cemitery"]
         self.player_time = 10 * 60  # 10 min in seconds
-        GPIO.setmode(GPIO.BCM)
         self.last_timestamp = time.time()
 
     def run(self):

@@ -15,6 +15,7 @@ class ButtonsModule:
             "rook": ROOK_BUTTON_PIN,
         }
 
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(QUEEN_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(BISHOP_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(KNIGHT_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)

@@ -7,6 +7,7 @@ class MotorModule:
         self.CONTACTS = [20, 21]
         self.DIRECTION = [2, 4]
         self.STEP = [3, 17]
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.DIRECTION[0], GPIO.OUT)
         GPIO.setup(self.DIRECTION[1], GPIO.OUT)
         GPIO.setup(self.STEP[0], GPIO.OUT)
