@@ -4,17 +4,20 @@ import time
 
 class MotorModule:
     def __init__(self):
-        DIRECTION = [2, 4]
-        STEP = [3, 17]
+        self.CONTACTS = [20, 21]
+        self.DIRECTION = [2, 4]
+        self.STEP = [3, 17]
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(DIRECTION[0], GPIO.OUT)
-        GPIO.setup(DIRECTION[1], GPIO.OUT)
-        GPIO.setup(STEP[0], GPIO.OUT)
-        GPIO.setup(STEP[1], GPIO.OUT)
-        GPIO.output(DIRECTION[0], GPIO.HIGH)
-        GPIO.output(DIRECTION[1], GPIO.HIGH)
+        GPIO.setup(self.DIRECTION[0], GPIO.OUT)
+        GPIO.setup(self.DIRECTION[1], GPIO.OUT)
+        GPIO.setup(self.STEP[0], GPIO.OUT)
+        GPIO.setup(self.STEP[1], GPIO.OUT)
+        GPIO.output(self.DIRECTION[0], GPIO.HIGH)
+        GPIO.output(self.DIRECTION[1], GPIO.HIGH)
         self.DELAY = 0.005 / 4
         self.STEP_DISTANCE = 0.001
+        GPIO.setup(self.CONTACTS[0], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(self.CONTACTS[1], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
     def move(self, axis, direction, steps):
         GPIO.output(self.DIRECTION[axis], direction)
@@ -25,9 +28,9 @@ class MotorModule:
             time.sleep(self.DELAY)
 
     def return_home(self):
-        while not home.x:  # verificar gpio
+        while not GPIO.input(self.CONTACTS[0]):  # verificar gpio
             self.move(0, 0, 1)
-        while not home.y:  # verificar gpio
+        while not GPIO.input(self.CONTACTS[1]):  # verificar gpio
             self.move(1, 0, 1)
 
     def follow_path(self, path):
