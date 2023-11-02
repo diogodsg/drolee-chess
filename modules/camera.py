@@ -66,7 +66,7 @@ class CameraModule:
         # self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
         print("self.stream1")
         print(self.stream)
-        self.picam.capture_buffer(self.stream, format="jpeg")
+        self.picam.capture_buffer(self.stream)
         print("self.stream2")
         print(self.stream)
         data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
