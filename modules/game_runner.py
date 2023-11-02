@@ -1,5 +1,5 @@
 import time
-
+import RPi.GPIO as GPIO
 import numpy as np
 from modules.camera import CameraModule
 from modules.game_logic import GameLogicModule
