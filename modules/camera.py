@@ -63,13 +63,7 @@ class CameraModule:
         time.sleep(1)
 
     def get_pic(self):
-        # self.img = PiRGBArray(self.picam, size=(1920, 1080)).array
         self.img = self.picam.capture_array()
-        # data = np.fromstring(self.stream.getvalue(), dtype=np.uint8)
-        print("type(self.stream)")
-        print(type(self.stream))
-        # self.img = cv2.imread(self.stream)
-        # display_window = cv2.namedWindow("Image")
         bottom_right = self.bottom_right
         top_left = self.top_left
         total_width = bottom_right[0] - top_left[0]
@@ -115,7 +109,14 @@ class CameraModule:
         for i in range(2):
             for j in range(8):
                 right_cemitery[j][i] = self.get_cemitery_piece(i, j, "black")
-
+        print(
+            {
+                "left_cemitery": left_cemitery,
+                "main_board": main_board,
+                "right_cemitery": right_cemitery,
+                "obstructed": self.invalid,
+            }
+        )
         return {
             "left_cemitery": left_cemitery,
             "main_board": main_board,

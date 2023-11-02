@@ -26,8 +26,10 @@ class GameRunner:
     def run(self):
         print("self.chess_game.board.outcome")
         print(self.chess_game.board.outcome())
+        i = 0
         while not self.chess_game.board.outcome():
-            print("Inside loop")
+            i = i + 1
+            print(f"Inside loop {i}")
             print(self.chess_game.board.outcome())
             if self.has_time:
                 self.display.display(
