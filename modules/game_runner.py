@@ -9,6 +9,7 @@ from modules.display import DisplayModule
 
 class GameRunner:
     def __init__(self, color, has_time, difficulty, display: DisplayModule):
+        self.has_time = has_time
         self.display = display
         self.chess_game = GameLogicModule(difficulty=difficulty)
         self.illegal_state = False
