@@ -42,11 +42,12 @@ class BoardPart:
         return square, rec_tl, rec_br
 
     def draw_squares(self):
+        draw_img = self.img
         for i in range(self.x):
             for j in range(self.y):
                 _, rec_tl, rec_br = self.get_square(i, j)
-                cv2.rectangle(self.img, rec_tl, rec_br, (0, 0, 255), 1)
-        return self.img
+                cv2.rectangle(draw_img, rec_tl, rec_br, (0, 0, 255), 1)
+        return draw_img
 
 
 class CameraModule:
