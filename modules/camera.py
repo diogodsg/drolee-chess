@@ -67,6 +67,7 @@ class CameraModule:
     def get_pic(self):
         print("inside get_pic")
         self.img = self.picam.capture_array()
+        self.img = cv2.flip(self.img, -1)
         print("after capture_array")
         bottom_right = self.bottom_right
         top_left = self.top_left

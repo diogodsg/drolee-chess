@@ -5,6 +5,7 @@ from modules.camera import CameraModule
 from modules.game_logic import GameLogicModule
 from utils.move_detector import detect_movement
 from modules.display import DisplayModule
+from modules.path import PathModule
 
 
 class GameRunner:
@@ -22,6 +23,7 @@ class GameRunner:
         self.right_cem_state = board["right_cemitery"]
         self.player_time = 10 * 60  # 10 min in seconds
         self.last_timestamp = time.time()
+        self.path_module = PathModule()
 
     def run(self):
         print("self.chess_game.board.outcome")
@@ -85,6 +87,9 @@ class GameRunner:
         else:
             self.bot_move = self.chess_game.get_bot_move()
             self.display.display(1, "Vez do Tabuleiro")
+
             # fazer movimento fisico
+            self.path_module.move_piece()
+
             self.player_turn = True
             self.last_timestamp = time.time()

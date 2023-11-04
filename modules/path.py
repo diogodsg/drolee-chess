@@ -18,13 +18,13 @@ class PathModule:
     def __init__(self):
         self.motors = MotorModule()
 
-        self.BOARD_CORNER_X = 7
-        self.BOARD_CORNER_Y = 1 
+        self.BOARD_CORNER_X = 0
+        self.BOARD_CORNER_Y = 0 
         self.HALF_SQUARE = 1.5
         self.CEMITERY_GAP = 1
 
         self.motors.return_home()
-        self.current_pos = (30, 0)##(self.BOARD_CORNER_X + 16*self.HALF_SQUARE + self.CEMITERY_GAP + , 0)
+        self.current_pos = (36, -3)##(self.BOARD_CORNER_X + 16*self.HALF_SQUARE + self.CEMITERY_GAP + , 0)
 
         self.board_positions = {}
 
@@ -32,42 +32,52 @@ class PathModule:
 
         leters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'w', 'x', 'y', 'z']
 
-        for x in range(0, 8):
-            for y in range(0, 8):
-                self.board_positions[leters[x] + str(y+1)] = (self.BOARD_CORNER_X + self.HALF_SQUARE + 2*self.HALF_SQUARE*x,
-                                                              self.BOARD_CORNER_Y + self.HALF_SQUARE + 2*self.HALF_SQUARE*y)
+        for x in range(1, 9):
+            for y in range(1, 9):
+                self.board_positions[leters[x] + str(y)] = (self.BOARD_CORNER_X + 4*self.HALF_SQUARE + self.CEMITERY_GAP + 2*self.HALF_SQUARE*x,
+                                                              self.BOARD_CORNER_Y + 4*self.HALF_SQUARE + self.CEMITERY_GAP + 2*self.HALF_SQUARE*y)
         
         for x in range(0, 2):
             for y in range (0, 8):
-                self.white_cemitery_positions[leters[8+x] + str(y+1)] = ()
+                self.white_cemitery_positions[leters[8+x] + str(y+1)] = (self.BOARD_CORNER_X + 2*self.HALF_SQUARE*x, self.BOARD_CORNER_Y + 2*self.HALF_SQUARE*x)
                 self.black_cemitery_positions[leters[10+x] + str(y+1)] = ()
 
 
         
 
     def calculate_path(self, destination):
-        current_pos = (2, 5)  # mm
-        origin = "e2"
-        destination = "e4"
 
         path = []
-
-        #move magnet to center of origin square
-        path.append()
         
+        if self.current_pos == self.board_positions[destination]:
+            return path
+
         #move piece to the bottom left corner of origin square
-        path.append((-self.HALF_SQUARE, -self.HALF_SQUARE))
+        path.append((-self.HALF_SQUARE, 0))
+        path.append((0, -self.HALF_SQUARE))
 
         #move piece to the bottom left corner of destination square
         path.append((self.board_positions[destination][0]-self.current_pos[0], 0)) # x axis
         path.append((0, self.board_positions[destination][1]-self.current_pos[1])) # y axis
 
         #move piece to the center of the destination square
-        path.append((self.HALF_SQUARE, self.HALF_SQUARE))
+        path.append((self.HALF_SQUARE, 0))
+        path.append((0, self.HALF_SQUARE))
 
         self.current_pos = self.board_positions[destination]
 
+        return path
+
     def move_piece(self, movement: str):
-        path = self.calculate_path(movement[:2], movement[2:4])
-        self.motors.follow(path)
+
+        path = self.calculate_path(movement[:2]) #go to piece
+        self.motors.follow_path(path)
+
+        self.motors.set_magnet(True)
+
+        path = self.calculate_path(movement[2:4]) #go to target
+        self.motors.follow_path(path)
+
+        self.motors.set_magnet(False)
+        
             

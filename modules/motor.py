@@ -1,5 +1,9 @@
 import RPi.GPIO as GPIO
 import time
+import math
+
+#motor moves 4cm or 3.97cm per turn 
+
 
 
 class MotorModule:
@@ -7,21 +11,29 @@ class MotorModule:
         self.CONTACTS = [20, 21]
         self.DIRECTION = [2, 4]
         self.STEP = [3, 17]
+        self.MAGNET = 5
+
         GPIO.setmode(GPIO.BCM)
+
         GPIO.setup(self.DIRECTION[0], GPIO.OUT)
         GPIO.setup(self.DIRECTION[1], GPIO.OUT)
         GPIO.setup(self.STEP[0], GPIO.OUT)
         GPIO.setup(self.STEP[1], GPIO.OUT)
+        GPIO.setup(self.MAGNET, GPIO.OUT)
+
+        GPIO.output(self.MAGNET, GPIO.LOW)
         GPIO.output(self.DIRECTION[0], GPIO.HIGH)
         GPIO.output(self.DIRECTION[1], GPIO.HIGH)
+
         self.DELAY = 0.005 / 4
-        self.STEP_DISTANCE = 0.001
+        self.STEP_DISTANCE = 3.97/800
         GPIO.setup(self.CONTACTS[0], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(self.CONTACTS[1], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
+
     def move(self, axis, direction, steps):
         GPIO.output(self.DIRECTION[axis], direction)
-        for i in range(int(steps)):
+        for i in range(math.floor(steps)):
             GPIO.output(self.STEP[axis], GPIO.HIGH)
             time.sleep(self.DELAY)
             GPIO.output(self.STEP[axis], GPIO.LOW)
@@ -40,3 +52,9 @@ class MotorModule:
             direction_y = 1 if movement[1] > 0 else 0
             self.move(0, direction_x, movement[0] / self.STEP_DISTANCE)
             self.move(0, direction_y, movement[1] / self.STEP_DISTANCE)
+
+    def set_magnet(self, value):
+        if value:
+            GPIO.output(self.MAGNET, GPIO.HIGH)
+        else:
+            GPIO.output(self.MAGNET, GPIO.LOW)
