@@ -41,13 +41,12 @@ class BoardPart:
         square = self.img[y_start:y_end, x_start:x_end]
         return square, rec_tl, rec_br
 
-    def draw_squares(self):
-        draw_img = self.img
+    def draw_squares(self, img):
         for i in range(self.x):
             for j in range(self.y):
                 _, rec_tl, rec_br = self.get_square(i, j)
-                cv2.rectangle(draw_img, rec_tl, rec_br, (0, 0, 255), 1)
-        return draw_img
+                cv2.rectangle(img, rec_tl, rec_br, (0, 0, 255), 1)
+        return img
 
 
 class CameraModule:
@@ -93,9 +92,10 @@ class CameraModule:
         print("get_pic ended!")
 
     def draw_squares(self):
-        self.main_board.draw_squares()
-        self.white_cemitery.draw_squares()
-        self.black_cemitery.draw_squares()
+        self.draw_img = self.img.copy()
+        self.draw_img = self.main_board.draw_squares(self.draw_img)
+        self.white_cemitery.draw_squares(self.draw_img)
+        self.black_cemitery.draw_squares(self.draw_img)
 
     def detect_game(self):
         print("Insiee detect_game!")
@@ -103,7 +103,7 @@ class CameraModule:
         print("after get_pic")
         self.invalid = False
         self.draw_squares()
-        cv2.imshow("color image", self.img)
+        cv2.imshow("color image", self.draw_img)
         cv2.waitKey(0)
 
         main_board = np.zeros((8, 8))
