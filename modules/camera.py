@@ -64,10 +64,8 @@ class CameraModule:
         time.sleep(1)
 
     def get_pic(self):
-        print("inside get_pic")
         self.img = self.picam.capture_array()
         self.img = cv2.flip(self.img, -1)
-        print("after capture_array")
         bottom_right = self.bottom_right
         top_left = self.top_left
         total_width = bottom_right[0] - top_left[0]
@@ -89,7 +87,6 @@ class CameraModule:
         self.black_cemitery = BoardPart(self.img, top_left_rc, bottom_right, 2, 8)
 
         self.invalid = False
-        print("get_pic ended!")
 
     def draw_squares(self):
         self.draw_img = self.img.copy()
@@ -98,31 +95,30 @@ class CameraModule:
         self.black_cemitery.draw_squares(self.draw_img)
 
     def detect_game(self):
-        print("Insiee detect_game!")
         self.get_pic()
-        print("after get_pic")
         self.invalid = False
         self.draw_squares()
+        print("displaying frame\n")
         cv2.imshow("color image", self.draw_img)
         cv2.waitKey(0)
 
         main_board = np.zeros((8, 8))
         left_cemitery = np.zeros((8, 2))
         right_cemitery = np.zeros((8, 2))
-        print("\tInitialized")
+
         for i in range(8):
             for j in range(8):
                 main_board[j][i] = self.get_piece(i, j)
-        print("\tGot pieces main board")
+
         for i in range(2):
             for j in range(8):
                 left_cemitery[j][i] = self.get_cemitery_piece(i, j, "white")
-        print("\tGot pieces left cemeterey")
+
 
         for i in range(2):
             for j in range(8):
                 right_cemitery[j][i] = self.get_cemitery_piece(i, j, "black")
-        print("\tGot pieces right cemeeteryye-fe8yhv")
+
         print(
             {
                 "left_cemitery": left_cemitery,

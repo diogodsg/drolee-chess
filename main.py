@@ -13,7 +13,7 @@ class Application:
         while True:
             # print("On Select Color State")
             # color = self.menu.selectColor()
-            color = 0
+            color = "WHITE"
             # print("On Select Color State")
             # difficulty = self.menu.selectDifficulty()
             difficulty = 5

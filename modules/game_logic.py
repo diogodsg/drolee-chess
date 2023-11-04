@@ -3,21 +3,31 @@ from stockfish import Stockfish
 
 
 class GameLogicModule:
-    def __init__(self, difficulty):
+    def __init__(self, difficulty, color: str):
         self.board = chess.Board()
         self.stockfish = Stockfish(path="./Stockfish-sf_15/src/stockfish")
         self.stockfish.set_fen_position(self.board.fen())
         self.stockfish.set_skill_level(difficulty)
+        if color != "WHITE":
+            self.get_bot_move()
 
-    def make_move(self, move: str):
+
+    def is_valid_movement(self, move: str):
         legal_moves = [str(x) for x in list(self.board.legal_moves)]
         if move in legal_moves:
-            self.board.push_san(move)
+            print("valid move\n")
             return True
-        else:
-            return False
+        
+        print("invalid move\n")
+        return False
 
-    def get_bot_move(self):
+    def make_move(self, move: str):
+        print(f"moving {move}")
+        self.board.push_san(move)
+         
+
+    def make_bot_move(self):
+        print("querrying bot move\n")
         self.stockfish.set_fen_position(self.board.fen())
         bot_move = self.stockfish.get_best_move()
         print("bot move: ", bot_move)
